@@ -1,24 +1,30 @@
-import os
+import argparse
+from pathlib import Path
+
 from cairosvg import svg2png
 
-def convert_svg_to_png():
-    # Создаем выходную директорию, если она не существует
-    if not os.path.exists('./png_out'):
-        os.makedirs('./png_out')
-    
-    # Получаем список всех SVG файлов
-    svg_files = [f for f in os.listdir('./svg_in') if f.endswith('.svg')]
-    
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Convert SVG files to transparent PNG assets.")
+    parser.add_argument("--input-dir", default="svg_in", help="Directory with source SVG files")
+    parser.add_argument("--output-dir", default="png_out", help="Directory for converted PNG files")
+    parser.add_argument("--size", type=int, default=1624, help="Square output size in pixels")
+    return parser.parse_args()
+
+
+def convert_svg_to_png(input_dir: Path, output_dir: Path, size: int) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    svg_files = sorted(path for path in input_dir.iterdir() if path.suffix.lower() == ".svg")
+
     for svg_file in svg_files:
-        input_path = os.path.join('./svg_in', svg_file)
-        output_path = os.path.join('./png_out', os.path.splitext(svg_file)[0] + '.png')
-        
+        output_path = output_dir / f"{svg_file.stem}.png"
         try:
-            # Конвертируем SVG в PNG с прозрачным фоном
-            svg2png(url=input_path, write_to=output_path, output_width=1024, output_height=1024)
-            print(f'Успешно конвертирован: {svg_file}')
-        except Exception as e:
-            print(f'Ошибка при конвертации {svg_file}: {str(e)}')
+            svg2png(url=str(svg_file), write_to=str(output_path), output_width=size, output_height=size)
+            print(f"Converted: {svg_file.name} -> {output_path.name}")
+        except Exception as exc:
+            print(f"Failed to convert {svg_file.name}: {exc}")
+
 
 if __name__ == '__main__':
-    convert_svg_to_png()
+    args = parse_args()
+    convert_svg_to_png(Path(args.input_dir), Path(args.output_dir), args.size)

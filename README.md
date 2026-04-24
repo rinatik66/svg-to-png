@@ -1,72 +1,42 @@
 # SVG to PNG Converter
 
-Скрипт для конвертации SVG файлов в PNG с прозрачным фоном.
+Convert batches of SVG assets into transparent PNG files.
 
-## Требования
+## Requirements
 
-- macOS
-- Python 3.9 или выше
-- Homebrew
-- Виртуальное окружение Python (рекомендуется)
+- Python 3.9+
+- CairoSVG runtime dependencies
 
-## Установка
+On macOS:
 
-1. Установите необходимые системные зависимости через Homebrew:
 ```bash
 brew install cairo pango libpng jpeg giflib librsvg
 ```
 
-2. Создайте и активируйте виртуальное окружение:
-```bash
-python -m venv venv
-source venv/bin/activate
-```
+## Setup
 
-3. Установите Python-зависимости:
 ```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Использование
+## Usage
 
-1. Поместите ваши SVG файлы в директорию `svg_in`
+Place source files into `svg_in/` and run:
 
-2. Запустите конвертацию одним из способов:
-
-   а) Через shell-скрипт (рекомендуемый способ):
-   ```bash
-   ./convert.sh
-   ```
-
-   б) Напрямую через Python:
-   ```bash
-   python svg_to_png.py
-   ```
-
-3. Конвертированные PNG файлы будут сохранены в директории `png_out`
-
-## Особенности
-
-- Все PNG файлы создаются с прозрачным фоном
-- Размер выходных файлов: 1024x1024 пикселя
-- Исходные SVG файлы остаются без изменений
-- При конвертации сохраняется оригинальное имя файла (меняется только расширение)
-
-## Структура проекта
-
-```
-.
-├── README.md
-├── requirements.txt
-├── svg_to_png.py
-├── convert.sh
-├── svg_in/          # Директория для исходных SVG файлов
-└── png_out/         # Директория для сконвертированных PNG файлов
+```bash
+python svg_to_png.py
 ```
 
-## Решение проблем
+Custom directories or output size:
 
-Если возникает ошибка с библиотекой Cairo, убедитесь, что:
-1. Все системные зависимости установлены через Homebrew
-2. Переменные окружения установлены корректно (используйте `convert.sh`)
-3. Виртуальное окружение активировано
+```bash
+python svg_to_png.py --input-dir svg_in --output-dir png_out --size 1624
+```
+
+## Notes
+
+- output PNG files keep transparent backgrounds
+- the default output is square `1624x1624`
+- source SVG files are left unchanged
